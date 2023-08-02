@@ -25,14 +25,21 @@ static u8 levelFlag = WELCOME_MESSAGE;
 
 u8 convertFromListKey = NULL;
 
+static char converterNumberAsCharacters[14] = {0};
+static u8 converterNumberAsCharactersIndex = 0;
+static u8 key = NULL;
+
 static void Calculator_Converter_welcomeMessage ();
 static void Calculator_Converter_mainList ();
+static void Calculator_Converter_scanCalculator ();
 static void Calculator_Converter_CalculateScreen ();
 static void Calculator_Converter_convertFromList ();
 static void Calculator_Converter_convertToList ();
+static void Calculator_Converter_scan ();
 static void Calculator_Converter_DecToDec ();
 static void Calculator_Converter_DecToHex ();
 static void Calculator_Converter_DecToBin ();
+static void Calculator_Converter_scanHex ();
 static void Calculator_Converter_HexToDec ();
 static void Calculator_Converter_HexToHex ();
 static void Calculator_Converter_HexToBin ();

@@ -57,27 +57,50 @@ static void Calculator_Converter_mainList ()
 	}
 }
 
+static void Calculator_Converter_scanCalculator ()
+{
+	key = KEYPAD_GetKey();
+	while (key != '=' && key != 'C')
+	{
+		if (key != NULL)
+		{
+			if (converterNumberAsCharactersIndex < 13)
+			{
+				if (converterNumberAsCharactersIndex == 0)
+				{
+					LCD_GoToClear(1, 0, 13);
+					LCD_GoToClear(0, 0, 13);
+				}
+				
+				LCD_WriteChar(key);
+				converterNumberAsCharacters[converterNumberAsCharactersIndex] = key;
+				converterNumberAsCharactersIndex++;
+				converterNumberAsCharacters[converterNumberAsCharactersIndex] = NULL;
+			}
+		}
+		
+		key = KEYPAD_GetKey();
+	}
+}
+
 static void Calculator_Converter_CalculateScreen ()
 {
 	if (levelFlag == CALCULATE_SCREEN)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
+		Calculator_Converter_scanCalculator ();
+		
+		if (key == '=')
 		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("");
+			converterNumberAsCharactersIndex = 0;
 			LCD_GoTo(1, 0);
-			LCD_WriteString("");
-			
-			key = KEYPAD_GetKey();
+			LCD_WriteString(converterNumberAsCharacters);
 		}
-		
-		if (key == 'C')
+		else if (key == 'C')
 		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
@@ -186,51 +209,83 @@ static void Calculator_Converter_convertToList ()
 	}
 }
 
+static void Calculator_Converter_scan ()
+{
+	key = KEYPAD_GetKey();
+	while (key != '=' && key != 'C')
+	{
+		if (key != NULL)
+		{
+			if (converterNumberAsCharactersIndex < 13)
+			{
+				if (converterNumberAsCharactersIndex == 0)
+				{
+					LCD_GoToClear(1, 4, 13);
+					LCD_GoToClear(0, 4, 13);
+				}
+				
+				LCD_WriteChar(key);
+				converterNumberAsCharacters[converterNumberAsCharactersIndex] = key;
+				converterNumberAsCharactersIndex++;
+				converterNumberAsCharacters[converterNumberAsCharactersIndex] = NULL;
+			}
+		}
+		
+		key = KEYPAD_GetKey();
+	}
+}
+
 static void Calculator_Converter_DecToDec ()
 {
 	if (levelFlag == DEC_TO_DEC)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("DEC:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("DEC:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("DEC:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("DEC:");
 		
-		if (key == 'C')
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
+		
 }
 
 static void Calculator_Converter_DecToHex ()
 {
 	if (levelFlag == DEC_TO_HEX)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("DEC:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("HEX:");
-			
-			key = KEYPAD_GetKey();
-		}
 		
-		if (key == 'C')
+		LCD_GoTo(0, 0);
+		LCD_WriteString("DEC:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("HEX:");
+		
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
@@ -238,23 +293,74 @@ static void Calculator_Converter_DecToBin ()
 {
 	if (levelFlag == DEC_TO_BIN)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("DEC:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("BIN:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("DEC:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("BIN:");
 		
-		if (key == 'C')
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
+		}
+	}
+}
+
+static void Calculator_Converter_scanHex ()
+{
+	key = KEYPAD_GetKey();
+	while (key != '=' && key != 'C')
+	{
+		if (key != NULL)
+		{
+			if (converterNumberAsCharactersIndex < 13)
+			{
+				if (converterNumberAsCharactersIndex == 0)
+				{
+					LCD_GoToClear(1, 4, 13);
+					LCD_GoToClear(0, 4, 13);
+				}
+				
+				if (key == '/')
+				{
+					LCD_WriteChar('A');
+					converterNumberAsCharacters[converterNumberAsCharactersIndex] = 'A';
+				}
+				else if (key == '*')
+				{
+					LCD_WriteChar('B');
+					converterNumberAsCharacters[converterNumberAsCharactersIndex] = 'B';
+				}
+				else if (key == '-')
+				{
+					LCD_WriteChar('D');
+					converterNumberAsCharacters[converterNumberAsCharactersIndex] = 'D';
+				}
+				else if (key == '+')
+				{
+					LCD_WriteChar('E');
+					converterNumberAsCharacters[converterNumberAsCharactersIndex] = 'E';
+				}
+				else
+				{
+					LCD_WriteChar(key);
+					converterNumberAsCharacters[converterNumberAsCharactersIndex] = key;
+				}
+				converterNumberAsCharactersIndex++;
+				converterNumberAsCharacters[converterNumberAsCharactersIndex] = NULL;
+			}
 		}
 		
-		LCD_Clear();
+		key = KEYPAD_GetKey();
 	}
 }
 
@@ -262,23 +368,25 @@ static void Calculator_Converter_HexToDec ()
 {
 	if (levelFlag == HEX_TO_DEC)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("HEX:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("DEC:");
+		LCD_GoTo(0, 0);
+		LCD_WriteString("HEX:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("DEC:");
 			
-			key = KEYPAD_GetKey();
-		}
+		Calculator_Converter_scanHex ();
 		
-		if (key == 'C')
+		if (key == '=')
 		{
-			levelFlag = MAIN_LIST;
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
 		}
-		
-		LCD_Clear();
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
+			levelFlag = MAIN_LIST;
+			LCD_Clear();
+		}
 	}
 }
 
@@ -286,23 +394,25 @@ static void Calculator_Converter_HexToHex ()
 {
 	if (levelFlag == HEX_TO_HEX)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("HEX:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("HEX:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("HEX:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("HEX:");
+	
+		Calculator_Converter_scanHex ();
 		
-		if (key == 'C')
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
@@ -310,23 +420,25 @@ static void Calculator_Converter_HexToBin ()
 {
 	if (levelFlag == HEX_TO_BIN)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("HEX:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("BIN:");
+		LCD_GoTo(0, 0);
+		LCD_WriteString("HEX:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("BIN:");
 			
-			key = KEYPAD_GetKey();
-		}
+		Calculator_Converter_scanHex ();
 		
-		if (key == 'C')
+		if (key == '=')
 		{
-			levelFlag = MAIN_LIST;
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
 		}
-		
-		LCD_Clear();
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
+			levelFlag = MAIN_LIST;
+			LCD_Clear();
+		}
 	}
 }
 
@@ -334,23 +446,25 @@ static void Calculator_Converter_BinToDec ()
 {
 	if (levelFlag == BIN_TO_DEC)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("BIN:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("DEC:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("BIN:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("DEC:");
 		
-		if (key == 'C')
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
@@ -358,23 +472,25 @@ static void Calculator_Converter_BinToHex ()
 {
 	if (levelFlag == BIN_TO_HEX)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("BIN:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("HEX:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("BIN:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("HEX:");
 		
-		if (key == 'C')
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
@@ -382,23 +498,25 @@ static void Calculator_Converter_BinToBin ()
 {
 	if (levelFlag == BIN_TO_BIN)
 	{
-		u8 key = KEYPAD_GetKey();
-		while (key != 'C')
-		{
-			LCD_GoTo(0, 0);
-			LCD_WriteString("BIN:");
-			LCD_GoTo(1, 0);
-			LCD_WriteString("BIN:");
-			
-			key = KEYPAD_GetKey();
-		}
+		LCD_GoTo(0, 0);
+		LCD_WriteString("BIN:");
+		LCD_GoTo(1, 0);
+		LCD_WriteString("BIN:");
 		
-		if (key == 'C')
+		Calculator_Converter_scan ();
+		
+		if (key == '=')
 		{
+			converterNumberAsCharactersIndex = 0;
+			LCD_GoTo(1, 4);
+			LCD_WriteString(converterNumberAsCharacters);
+		}
+		else if (key == 'C')
+		{
+			converterNumberAsCharactersIndex = 0;
 			levelFlag = MAIN_LIST;
+			LCD_Clear();
 		}
-		
-		LCD_Clear();
 	}
 }
 
