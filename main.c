@@ -5,6 +5,8 @@ int main ()
 {
 	Calculator_Converter_Init ();
 	
-	Calculator_Converter_welcomeMessage ();
-	
+	while (1)
+	{
+		Calculator_Converter_Run ();
+	}
 }

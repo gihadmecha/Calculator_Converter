@@ -7,8 +7,8 @@
 #include "LCD.h"
 #include "KEYPAD.h"
 
-void Calculator_Converter_Init ();
-void Calculator_Converter_welcomeMessage ();
+extern void Calculator_Converter_Init ();
+extern void Calculator_Converter_Run ();
 
 
 
