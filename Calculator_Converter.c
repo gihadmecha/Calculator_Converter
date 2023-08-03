@@ -123,6 +123,17 @@ static u8 Calculator_Converter_IsDecimal ()
 	return 1;
 }
 
+static void Calculator_Converter_Calculate ()
+{
+	u64 Number = 0;
+	u64 sum = 0;
+	
+	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
+	{
+		
+	}
+}
+
 static void Calculator_Converter_CalculateScreen ()
 {
 	if (levelFlag == CALCULATE_SCREEN)
@@ -286,6 +297,18 @@ static void Calculator_Converter_scan ()
 	}
 }
 
+static u64 Calculator_Converter_DecStringToDec ()
+{
+	u64 number = 0;
+	u8 digit = 0;
+	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
+	{
+		digit = converterNumberAsCharacters[index] - '0';
+		number = number * 10 + digit;
+	}
+	return number;
+} 
+
 static void Calculator_Converter_DecToDec ()
 {
 	if (levelFlag == DEC_TO_DEC)
@@ -339,7 +362,7 @@ static void Calculator_Converter_DecToHex ()
 			if (Calculator_Converter_IsDecimal ())
 			{
 				LCD_GoTo(1, 4);
-				LCD_WriteString(converterNumberAsCharacters);
+				LCD_WriteHex(Calculator_Converter_DecStringToDec ());
 			}
 			else
 			{
@@ -374,7 +397,7 @@ static void Calculator_Converter_DecToBin ()
 			if (Calculator_Converter_IsDecimal ())
 			{
 				LCD_GoTo(1, 4);
-				LCD_WriteString(converterNumberAsCharacters);
+				LCD_WriteBinary (Calculator_Converter_DecStringToDec ());
 			}
 			else
 			{
@@ -442,6 +465,46 @@ static void Calculator_Converter_scanHex ()
 	}
 }
 
+static u64 Calculator_Converter_HexStingToDec ()
+{
+	u64 number = 0;
+	u8 digit = 0;
+	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
+	{
+		if (converterNumberAsCharacters[index] == 'A')
+		{
+			digit = 10;
+		}
+		else if (converterNumberAsCharacters[index] == 'B')
+		{
+			digit = 11;
+		}
+		else if (converterNumberAsCharacters[index] == 'C')
+		{
+			digit = 12;
+		}
+		else if (converterNumberAsCharacters[index] == 'D')
+		{
+			digit = 13;
+		}
+		else if (converterNumberAsCharacters[index] == 'E')
+		{
+			digit = 14;
+		}
+		else if (converterNumberAsCharacters[index] == 'F')
+		{
+			digit = 15;
+		}
+		else
+		{
+			digit = converterNumberAsCharacters[index] - '0';
+		}
+		
+		number = number * 16 + digit;
+	}
+	return number;
+}
+
 static void Calculator_Converter_HexToDec ()
 {
 	if (levelFlag == HEX_TO_DEC)
@@ -456,7 +519,7 @@ static void Calculator_Converter_HexToDec ()
 		if (key == '=')
 		{
 			LCD_GoTo(1, 4);
-			LCD_WriteString(converterNumberAsCharacters);
+			LCD_WriteNumber (Calculator_Converter_HexStingToDec ());
 			converterNumberAsCharactersIndex = 0;
 			converterNumberAsCharacters[0] = NULL;
 		}
@@ -512,7 +575,7 @@ static void Calculator_Converter_HexToBin ()
 		if (key == '=')
 		{
 			LCD_GoTo(1, 4);
-			LCD_WriteString(converterNumberAsCharacters);
+			LCD_WriteBinary (Calculator_Converter_HexStingToDec ());
 			converterNumberAsCharactersIndex = 0;
 			converterNumberAsCharacters[0] = NULL;
 		}
@@ -551,6 +614,18 @@ static u8 Calculator_Converter_IsBinary ()
 	return 1;
 }
 
+static u64 Calculator_Converter_BinaryStingToDec ()
+{
+	u64 number = 0;
+	u8 digit = 0;
+	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
+	{
+		digit = converterNumberAsCharacters[index] - '0';
+		number = number * 2 + digit;
+	}
+	return number;
+}
+
 static void Calculator_Converter_BinToDec ()
 {
 	if (levelFlag == BIN_TO_DEC)
@@ -567,7 +642,7 @@ static void Calculator_Converter_BinToDec ()
 			if (Calculator_Converter_IsBinary ())
 			{
 				LCD_GoTo(1, 4);
-				LCD_WriteString(converterNumberAsCharacters);
+				LCD_WriteNumber (Calculator_Converter_BinaryStingToDec ());
 			}
 			else
 			{
@@ -602,7 +677,7 @@ static void Calculator_Converter_BinToHex ()
 			if (Calculator_Converter_IsBinary ())
 			{
 				LCD_GoTo(1, 4);
-				LCD_WriteString(converterNumberAsCharacters);
+				LCD_WriteHex(Calculator_Converter_BinaryStingToDec ());
 			}
 			else
 			{
