@@ -72,6 +72,11 @@ static void Calculator_Converter_scanCalculator ()
 				{
 					LCD_GoToClear(1, 0, 16);
 					LCD_GoToClear(0, 0, 16);
+					
+					if (key == '+' || key == '-' || key == '*' || key == '/')
+					{
+						LCD_WriteString("Ans");
+					}
 				}
 				
 				LCD_WriteChar(key);
@@ -106,10 +111,10 @@ static u8 Calculator_Converter_IsDecimal ()
 {
 	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
 	{
-		if (converterNumberAsCharacters[0] == '*' || converterNumberAsCharacters[0] == '/')
-		{
-			return 0;
-		}
+		//if (converterNumberAsCharacters[0] == '*' || converterNumberAsCharacters[0] == '/')
+		//{
+			//return 0;
+		//}
 		if ( (converterNumberAsCharacters[index] < '0' || converterNumberAsCharacters[index] > '9') && converterNumberAsCharacters[index+1] == NULL )
 		{
 			return 0;
@@ -123,14 +128,74 @@ static u8 Calculator_Converter_IsDecimal ()
 	return 1;
 }
 
-static void Calculator_Converter_Calculate ()
+static u64 number1 = 0;
+static u64 number2 = 0;
+static u8 sign = '+';
+static s64 result = 0;
+static u8 Calculator_Converter_CalculatorProcess ()
 {
-	u64 Number = 0;
-	u64 sum = 0;
+	u8 numberFlag = 1;
+	u8 digit = 0;
+	
+	number2 = 0;
 	
 	for (u8 index = 0; converterNumberAsCharacters[index]; index++)
 	{
+		if (index == 0)
+		{
+			if (converterNumberAsCharacters[0] >= '0' && converterNumberAsCharacters[0] <= '9')
+			{
+				number1 = 0;
+			}
+			else
+			{
+				number1 = result;
+			}
+		}
 		
+		if (converterNumberAsCharacters[index] >= '0' && converterNumberAsCharacters[index] <= '9' && numberFlag == 1)
+		{
+			digit = converterNumberAsCharacters[index] - '0';
+			number1 = number1 * 10 + digit;
+		}
+		else if (converterNumberAsCharacters[index] >= '0' && converterNumberAsCharacters[index] <= '9' && numberFlag == 2)
+		{
+			digit = converterNumberAsCharacters[index] - '0';
+			number2 = number2 * 10 + digit;
+		}
+		else
+		{
+			numberFlag = 2;
+			sign = converterNumberAsCharacters[index];
+		}
+	}
+	
+	if (sign == '/' && number2 == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+static void Calculator_Converter_Calculate ()
+{
+	switch (sign)
+	{
+		case '+':
+		result = number1 + number2;
+		break;
+		case '-':
+		result = number1 - number2;
+		break;
+		case '*':
+		result = number1 * number2;
+		break;
+		case '/':
+		result = number1 / number2;
+		break;
 	}
 }
 
@@ -142,10 +207,12 @@ static void Calculator_Converter_CalculateScreen ()
 		
 		if (key == '=')
 		{
-			if (Calculator_Converter_IsDecimal ())
+			if (Calculator_Converter_IsDecimal () && Calculator_Converter_CalculatorProcess ())
 			{
+				Calculator_Converter_Calculate ();
+				
 				LCD_GoTo(1, 0);
-				LCD_WriteString(converterNumberAsCharacters);
+				LCD_WriteNumber(result);
 			}
 			else
 			{
@@ -158,8 +225,8 @@ static void Calculator_Converter_CalculateScreen ()
 		{
 			converterNumberAsCharactersIndex = 0;
 			converterNumberAsCharacters[0] = NULL;
-			levelFlag = MAIN_LIST;
 			LCD_Clear();
+			levelFlag = MAIN_LIST;
 		}
 	}
 }
@@ -206,7 +273,20 @@ static void Calculator_Converter_convertToList ()
 		while (key != '1' && key != '2' && key != '3' && key != 'C')
 		{
 			LCD_GoTo(0, 0);
-			LCD_WriteString("convert To:");
+			LCD_WriteString("convert ");
+			if (convertFromListKey == '1')
+			{
+				LCD_WriteChar('D');
+			}
+			else if (convertFromListKey == '2')
+			{
+				LCD_WriteChar('H');
+			}
+			else if (convertFromListKey == '3')
+			{
+				LCD_WriteChar('B');
+			}
+			LCD_WriteString(" To:");
 			LCD_GoTo(1, 0);
 			LCD_WriteString("1.D");
 			LCD_GoTo(1, 6);

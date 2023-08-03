@@ -31,7 +31,12 @@ static u8 key = NULL;
 
 static void Calculator_Converter_welcomeMessage ();
 static void Calculator_Converter_mainList ();
+
+static u8 Calculator_Converter_CalculatorProcess ();
+static void Calculator_Converter_Calculate ();
+
 static void Calculator_Converter_scanCalculator ();
+
 static void Calculator_Converter_ErrorMessage ();
 static u8 Calculator_Converter_IsDecimal ();
 
