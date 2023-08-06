@@ -16,13 +16,13 @@ static void Calculator_Converter_welcomeMessage ()
 	
 	LCD_GoTo(0, 0);
 	LCD_WriteString("Welcome !!");
-	_delay_ms(200);
+	_delay_ms(500);
 	
 	LCD_GoTo(0, 0);
 	LCD_WriteString("Calculator");
 	LCD_GoTo(1, 0);
 	LCD_WriteString("made by Gihad");
-	_delay_ms(200);
+	_delay_ms(1000);
 	
 	levelFlag = MAIN_LIST;
 	
